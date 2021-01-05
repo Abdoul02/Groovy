@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.abdoul.groovy.playlist.PlaylistViewModelShould" tests="6" skipped="0" failures="0" errors="0" timestamp="2020-12-31T15:38:01" hostname="MacBook-Pro" time="1.936">
+  <properties/>
+  <testcase name="closeLoaderAfterError" classname="com.abdoul.groovy.playlist.PlaylistViewModelShould" time="1.906"/>
+  <testcase name="emitErrorWhenReceiveError" classname="com.abdoul.groovy.playlist.PlaylistViewModelShould" time="0.004"/>
+  <testcase name="closeLoaderAfterPlaylistsLoad" classname="com.abdoul.groovy.playlist.PlaylistViewModelShould" time="0.005"/>
+  <testcase name="showSpinnerWhileLoading" classname="com.abdoul.groovy.playlist.PlaylistViewModelShould" time="0.004"/>
+  <testcase name="getPlaylistsFromRepository" classname="com.abdoul.groovy.playlist.PlaylistViewModelShould" time="0.014"/>
+  <testcase name="emitsPlaylistsFromRepository" classname="com.abdoul.groovy.playlist.PlaylistViewModelShould" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

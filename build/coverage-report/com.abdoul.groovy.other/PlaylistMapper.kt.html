@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlaylistMapper.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.abdoul.groovy.other</a> &gt; <span class="el_source">PlaylistMapper.kt</span></div><h1>PlaylistMapper.kt</h1><pre class="source lang-java linenums">package com.abdoul.groovy.other
+
+import com.abdoul.groovy.R
+import com.abdoul.groovy.model.Playlist
+import com.abdoul.groovy.model.PlaylistRaw
+import javax.inject.Inject
+
+<span class="fc" id="L8">class PlaylistMapper @Inject constructor() : Function1&lt;List&lt;PlaylistRaw&gt;, List&lt;Playlist&gt;&gt; {</span>
+
+    override fun invoke(playlistsRaw: List&lt;PlaylistRaw&gt;): List&lt;Playlist&gt; {
+<span class="fc" id="L11">        return playlistsRaw.map {</span>
+<span class="fc bfc" id="L12" title="All 2 branches covered.">            val image = when (it.category) {</span>
+<span class="pc bpc" id="L13" title="1 of 2 branches missed.">                &quot;rock&quot; -&gt; R.mipmap.rock</span>
+<span class="fc" id="L14">                else -&gt; R.mipmap.playlist</span>
+            }
+
+<span class="fc" id="L17">            Playlist(it.id, it.name, it.category, image)</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
