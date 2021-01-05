@@ -24,7 +24,8 @@ public final class PlaylistDetailsFragment_MembersInjector implements MembersInj
 
   public static MembersInjector<PlaylistDetailsFragment> create(
       Provider<PlaylistDetailsViewModelFactory> viewModelFactoryProvider) {
-    return new PlaylistDetailsFragment_MembersInjector(viewModelFactoryProvider);}
+    return new PlaylistDetailsFragment_MembersInjector(viewModelFactoryProvider);
+  }
 
   @Override
   public void injectMembers(PlaylistDetailsFragment instance) {

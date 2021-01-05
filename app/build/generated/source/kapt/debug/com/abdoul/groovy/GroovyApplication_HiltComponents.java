@@ -1,10 +1,12 @@
 package com.abdoul.groovy;
 
+import androidx.hilt.lifecycle.ViewModelFactoryModules;
 import com.abdoul.groovy.di.PlaylistDetailsModule;
 import com.abdoul.groovy.di.PlaylistModule;
 import com.abdoul.groovy.view.MainActivity_GeneratedInjector;
 import com.abdoul.groovy.view.PlaylistDetailsFragment_GeneratedInjector;
 import com.abdoul.groovy.view.PlaylistFragment_GeneratedInjector;
+import com.abdoul.groovy.viewModel.PlaylistViewModel_HiltModule;
 import dagger.Binds;
 import dagger.Component;
 import dagger.Module;
@@ -110,7 +112,8 @@ public final class GroovyApplication_HiltComponents {
           DefaultViewModelFactories.ActivityModule.class,
           FragmentCBuilderModule.class,
           ViewCBuilderModule.class,
-          HiltWrapper_ActivityModule.class
+          HiltWrapper_ActivityModule.class,
+          ViewModelFactoryModules.ActivityModule.class
       }
   )
   @ActivityScoped
@@ -126,7 +129,10 @@ public final class GroovyApplication_HiltComponents {
   }
 
   @Subcomponent(
-      modules = ActivityCBuilderModule.class
+      modules = {
+          ActivityCBuilderModule.class,
+          PlaylistViewModel_HiltModule.class
+      }
   )
   @ActivityRetainedScoped
   public abstract static class ActivityRetainedC implements ActivityRetainedComponent,
@@ -141,7 +147,8 @@ public final class GroovyApplication_HiltComponents {
       modules = {
           ApplicationContextModule.class,
           ActivityRetainedCBuilderModule.class,
-          ServiceCBuilderModule.class
+          ServiceCBuilderModule.class,
+          PlaylistModule.class
       }
   )
   @Singleton
@@ -157,7 +164,7 @@ public final class GroovyApplication_HiltComponents {
           DefaultViewModelFactories.FragmentModule.class,
           ViewWithFragmentCBuilderModule.class,
           PlaylistDetailsModule.class,
-          PlaylistModule.class
+          ViewModelFactoryModules.FragmentModule.class
       }
   )
   @FragmentScoped

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.abdoul.groovy.playlist.PlaylistServiceShould" tests="3" skipped="0" failures="0" errors="0" timestamp="2020-12-31T15:38:03" hostname="MacBook-Pro" time="0.077">
-  <properties/>
-  <testcase name="convertValuesToFlowResultAndEmitsThem" classname="com.abdoul.groovy.playlist.PlaylistServiceShould" time="0.071"/>
-  <testcase name="emitsErrorResultWhenNetworkFails" classname="com.abdoul.groovy.playlist.PlaylistServiceShould" time="0.004"/>
-  <testcase name="fetchPlaylistFromAPI" classname="com.abdoul.groovy.playlist.PlaylistServiceShould" time="0.002"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

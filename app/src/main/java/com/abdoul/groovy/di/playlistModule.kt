@@ -4,9 +4,9 @@ import com.jakewharton.espresso.OkHttp3IdlingResource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.FragmentComponent
 import okhttp3.OkHttpClient
 import com.abdoul.groovy.service.PlaylistAPI
+import dagger.hilt.android.components.ApplicationComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -14,7 +14,7 @@ val client = OkHttpClient()
 val idlingResource = OkHttp3IdlingResource.create("okhttp", client)
 
 @Module
-@InstallIn(FragmentComponent::class)
+@InstallIn(ApplicationComponent::class)
 class PlaylistModule {
 
     @Provides
