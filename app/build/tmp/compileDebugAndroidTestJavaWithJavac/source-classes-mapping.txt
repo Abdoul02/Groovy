@@ -1,0 +1,2 @@
+com/abdoul/groovy/test/BuildConfig.java
+ com.abdoul.groovy.test.BuildConfig
