@@ -20,7 +20,7 @@ public final class PlaylistViewModel extends androidx.lifecycle.ViewModel {
         return null;
     }
     
-    @javax.inject.Inject()
+    @androidx.hilt.lifecycle.ViewModelInject()
     public PlaylistViewModel(@org.jetbrains.annotations.NotNull()
     com.abdoul.groovy.repository.PlaylistRepository repository) {
         super();

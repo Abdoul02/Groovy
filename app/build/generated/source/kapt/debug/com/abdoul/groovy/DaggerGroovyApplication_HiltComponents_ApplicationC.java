@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.app.Service;
 import android.view.View;
 import androidx.fragment.app.Fragment;
+import androidx.hilt.lifecycle.ViewModelAssistedFactory;
+import androidx.hilt.lifecycle.ViewModelFactoryModules_ActivityModule_ProvideFactoryFactory;
+import androidx.hilt.lifecycle.ViewModelFactoryModules_FragmentModule_ProvideFactoryFactory;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import com.abdoul.groovy.di.PlaylistDetailsModule;
 import com.abdoul.groovy.di.PlaylistDetailsModule_PlaylistDetailsAPIFactory;
@@ -20,9 +24,9 @@ import com.abdoul.groovy.view.MainActivity;
 import com.abdoul.groovy.view.PlaylistDetailsFragment;
 import com.abdoul.groovy.view.PlaylistDetailsFragment_MembersInjector;
 import com.abdoul.groovy.view.PlaylistFragment;
-import com.abdoul.groovy.view.PlaylistFragment_MembersInjector;
 import com.abdoul.groovy.viewModel.PlaylistDetailsViewModelFactory;
-import com.abdoul.groovy.viewModel.PlaylistViewModelFactory;
+import com.abdoul.groovy.viewModel.PlaylistViewModel_AssistedFactory;
+import com.abdoul.groovy.viewModel.PlaylistViewModel_AssistedFactory_Factory;
 import dagger.hilt.android.internal.builders.ActivityComponentBuilder;
 import dagger.hilt.android.internal.builders.ActivityRetainedComponentBuilder;
 import dagger.hilt.android.internal.builders.FragmentComponentBuilder;
@@ -30,10 +34,13 @@ import dagger.hilt.android.internal.builders.ServiceComponentBuilder;
 import dagger.hilt.android.internal.builders.ViewComponentBuilder;
 import dagger.hilt.android.internal.builders.ViewWithFragmentComponentBuilder;
 import dagger.hilt.android.internal.modules.ApplicationContextModule;
+import dagger.hilt.android.internal.modules.ApplicationContextModule_ProvideApplicationFactory;
 import dagger.internal.Preconditions;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.Generated;
+import javax.inject.Provider;
 
 @Generated(
     value = "dagger.internal.codegen.ComponentProcessor",
@@ -44,16 +51,22 @@ import javax.annotation.Generated;
     "rawtypes"
 })
 public final class DaggerGroovyApplication_HiltComponents_ApplicationC extends GroovyApplication_HiltComponents.ApplicationC {
-  private DaggerGroovyApplication_HiltComponents_ApplicationC() {
+  private final ApplicationContextModule applicationContextModule;
 
+  private final PlaylistModule playlistModule;
+
+  private DaggerGroovyApplication_HiltComponents_ApplicationC(
+      ApplicationContextModule applicationContextModuleParam, PlaylistModule playlistModuleParam) {
+    this.applicationContextModule = applicationContextModuleParam;
+    this.playlistModule = playlistModuleParam;
   }
 
   public static Builder builder() {
     return new Builder();
   }
 
-  public static GroovyApplication_HiltComponents.ApplicationC create() {
-    return new Builder().build();
+  private PlaylistAPI getPlaylistAPI() {
+    return PlaylistModule_PlaylistAPIFactory.playlistAPI(playlistModule, PlaylistModule_RetrofitFactory.retrofit(playlistModule));
   }
 
   @Override
@@ -62,27 +75,38 @@ public final class DaggerGroovyApplication_HiltComponents_ApplicationC extends G
 
   @Override
   public ActivityRetainedComponentBuilder retainedComponentBuilder() {
-    return new ActivityRetainedCBuilder();}
+    return new ActivityRetainedCBuilder();
+  }
 
   @Override
   public ServiceComponentBuilder serviceComponentBuilder() {
-    return new ServiceCBuilder();}
+    return new ServiceCBuilder();
+  }
 
   public static final class Builder {
+    private ApplicationContextModule applicationContextModule;
+
+    private PlaylistModule playlistModule;
+
     private Builder() {
     }
 
-    /**
-     * @deprecated This module is declared, but an instance is not used in the component. This method is a no-op. For more, see https://dagger.dev/unused-modules.
-     */
-    @Deprecated
     public Builder applicationContextModule(ApplicationContextModule applicationContextModule) {
-      Preconditions.checkNotNull(applicationContextModule);
+      this.applicationContextModule = Preconditions.checkNotNull(applicationContextModule);
+      return this;
+    }
+
+    public Builder playlistModule(PlaylistModule playlistModule) {
+      this.playlistModule = Preconditions.checkNotNull(playlistModule);
       return this;
     }
 
     public GroovyApplication_HiltComponents.ApplicationC build() {
-      return new DaggerGroovyApplication_HiltComponents_ApplicationC();
+      Preconditions.checkBuilderRequirement(applicationContextModule, ApplicationContextModule.class);
+      if (playlistModule == null) {
+        this.playlistModule = new PlaylistModule();
+      }
+      return new DaggerGroovyApplication_HiltComponents_ApplicationC(applicationContextModule, playlistModule);
     }
   }
 
@@ -100,7 +124,8 @@ public final class DaggerGroovyApplication_HiltComponents_ApplicationC extends G
 
     @Override
     public ActivityComponentBuilder activityComponentBuilder() {
-      return new ActivityCBuilder();}
+      return new ActivityCBuilder();
+    }
 
     private final class ActivityCBuilder implements GroovyApplication_HiltComponents.ActivityC.Builder {
       private Activity activity;
@@ -119,8 +144,54 @@ public final class DaggerGroovyApplication_HiltComponents_ApplicationC extends G
     }
 
     private final class ActivityCImpl extends GroovyApplication_HiltComponents.ActivityC {
-      private ActivityCImpl(Activity activity) {
+      private final Activity activity;
 
+      private volatile Provider<PlaylistRepository> playlistRepositoryProvider;
+
+      private volatile Provider<PlaylistViewModel_AssistedFactory> playlistViewModel_AssistedFactoryProvider;
+
+      private ActivityCImpl(Activity activityParam) {
+        this.activity = activityParam;
+      }
+
+      private PlaylistService getPlaylistService() {
+        return new PlaylistService(DaggerGroovyApplication_HiltComponents_ApplicationC.this.getPlaylistAPI());
+      }
+
+      private PlaylistRepository getPlaylistRepository() {
+        return new PlaylistRepository(getPlaylistService(), new PlaylistMapper());
+      }
+
+      private Provider<PlaylistRepository> getPlaylistRepositoryProvider() {
+        Object local = playlistRepositoryProvider;
+        if (local == null) {
+          local = new SwitchingProvider<>(1);
+          playlistRepositoryProvider = (Provider<PlaylistRepository>) local;
+        }
+        return (Provider<PlaylistRepository>) local;
+      }
+
+      private PlaylistViewModel_AssistedFactory getPlaylistViewModel_AssistedFactory() {
+        return PlaylistViewModel_AssistedFactory_Factory.newInstance(getPlaylistRepositoryProvider());
+      }
+
+      private Provider<PlaylistViewModel_AssistedFactory> getPlaylistViewModel_AssistedFactoryProvider(
+          ) {
+        Object local = playlistViewModel_AssistedFactoryProvider;
+        if (local == null) {
+          local = new SwitchingProvider<>(0);
+          playlistViewModel_AssistedFactoryProvider = (Provider<PlaylistViewModel_AssistedFactory>) local;
+        }
+        return (Provider<PlaylistViewModel_AssistedFactory>) local;
+      }
+
+      private Map<String, Provider<ViewModelAssistedFactory<? extends ViewModel>>> getMapOfStringAndProviderOfViewModelAssistedFactoryOf(
+          ) {
+        return Collections.<String, Provider<ViewModelAssistedFactory<? extends ViewModel>>>singletonMap("com.abdoul.groovy.viewModel.PlaylistViewModel", (Provider) getPlaylistViewModel_AssistedFactoryProvider());
+      }
+
+      private ViewModelProvider.Factory getProvideFactory() {
+        return ViewModelFactoryModules_ActivityModule_ProvideFactoryFactory.provideFactory(activity, ApplicationContextModule_ProvideApplicationFactory.provideApplication(DaggerGroovyApplication_HiltComponents_ApplicationC.this.applicationContextModule), getMapOfStringAndProviderOfViewModelAssistedFactoryOf());
       }
 
       @Override
@@ -129,15 +200,18 @@ public final class DaggerGroovyApplication_HiltComponents_ApplicationC extends G
 
       @Override
       public Set<ViewModelProvider.Factory> getActivityViewModelFactory() {
-        return Collections.<ViewModelProvider.Factory>emptySet();}
+        return Collections.<ViewModelProvider.Factory>singleton(getProvideFactory());
+      }
 
       @Override
       public FragmentComponentBuilder fragmentComponentBuilder() {
-        return new FragmentCBuilder();}
+        return new FragmentCBuilder();
+      }
 
       @Override
       public ViewComponentBuilder viewComponentBuilder() {
-        return new ViewCBuilder();}
+        return new ViewCBuilder();
+      }
 
       private final class FragmentCBuilder implements GroovyApplication_HiltComponents.FragmentC.Builder {
         private Fragment fragment;
@@ -151,66 +225,59 @@ public final class DaggerGroovyApplication_HiltComponents_ApplicationC extends G
         @Override
         public GroovyApplication_HiltComponents.FragmentC build() {
           Preconditions.checkBuilderRequirement(fragment, Fragment.class);
-          return new FragmentCImpl(new PlaylistDetailsModule(), new PlaylistModule(), fragment);
+          return new FragmentCImpl(new PlaylistDetailsModule(), fragment);
         }
       }
 
       private final class FragmentCImpl extends GroovyApplication_HiltComponents.FragmentC {
-        private final PlaylistModule playlistModule;
-
         private final PlaylistDetailsModule playlistDetailsModule;
 
+        private final Fragment fragment;
+
         private FragmentCImpl(PlaylistDetailsModule playlistDetailsModuleParam,
-            PlaylistModule playlistModuleParam, Fragment fragment) {
-          this.playlistModule = playlistModuleParam;
+            Fragment fragmentParam) {
           this.playlistDetailsModule = playlistDetailsModuleParam;
+          this.fragment = fragmentParam;
         }
 
         private PlaylistDetailsAPI getPlaylistDetailsAPI() {
-          return PlaylistDetailsModule_PlaylistDetailsAPIFactory.playlistDetailsAPI(playlistDetailsModule, PlaylistModule_RetrofitFactory.retrofit(playlistModule));}
+          return PlaylistDetailsModule_PlaylistDetailsAPIFactory.playlistDetailsAPI(playlistDetailsModule, PlaylistModule_RetrofitFactory.retrofit(DaggerGroovyApplication_HiltComponents_ApplicationC.this.playlistModule));
+        }
 
         private PlaylistDetailsService getPlaylistDetailsService() {
-          return new PlaylistDetailsService(getPlaylistDetailsAPI());}
+          return new PlaylistDetailsService(getPlaylistDetailsAPI());
+        }
 
         private PlaylistDetailsViewModelFactory getPlaylistDetailsViewModelFactory() {
-          return new PlaylistDetailsViewModelFactory(getPlaylistDetailsService());}
+          return new PlaylistDetailsViewModelFactory(getPlaylistDetailsService());
+        }
 
-        private PlaylistAPI getPlaylistAPI() {
-          return PlaylistModule_PlaylistAPIFactory.playlistAPI(playlistModule, PlaylistModule_RetrofitFactory.retrofit(playlistModule));}
-
-        private PlaylistService getPlaylistService() {
-          return new PlaylistService(getPlaylistAPI());}
-
-        private PlaylistRepository getPlaylistRepository() {
-          return new PlaylistRepository(getPlaylistService(), new PlaylistMapper());}
-
-        private PlaylistViewModelFactory getPlaylistViewModelFactory() {
-          return new PlaylistViewModelFactory(getPlaylistRepository());}
+        private ViewModelProvider.Factory getProvideFactory() {
+          return ViewModelFactoryModules_FragmentModule_ProvideFactoryFactory.provideFactory(fragment, ApplicationContextModule_ProvideApplicationFactory.provideApplication(DaggerGroovyApplication_HiltComponents_ApplicationC.this.applicationContextModule), ActivityCImpl.this.getMapOfStringAndProviderOfViewModelAssistedFactoryOf());
+        }
 
         @Override
         public void injectPlaylistDetailsFragment(PlaylistDetailsFragment arg0) {
-          injectPlaylistDetailsFragment2(arg0);}
+          injectPlaylistDetailsFragment2(arg0);
+        }
 
         @Override
-        public void injectPlaylistFragment(PlaylistFragment arg0) {
-          injectPlaylistFragment2(arg0);}
+        public void injectPlaylistFragment(PlaylistFragment playlistFragment) {
+        }
 
         @Override
         public Set<ViewModelProvider.Factory> getFragmentViewModelFactory() {
-          return Collections.<ViewModelProvider.Factory>emptySet();}
+          return Collections.<ViewModelProvider.Factory>singleton(getProvideFactory());
+        }
 
         @Override
         public ViewWithFragmentComponentBuilder viewWithFragmentComponentBuilder() {
-          return new ViewWithFragmentCBuilder();}
+          return new ViewWithFragmentCBuilder();
+        }
 
         private PlaylistDetailsFragment injectPlaylistDetailsFragment2(
             PlaylistDetailsFragment instance) {
           PlaylistDetailsFragment_MembersInjector.injectViewModelFactory(instance, getPlaylistDetailsViewModelFactory());
-          return instance;
-        }
-
-        private PlaylistFragment injectPlaylistFragment2(PlaylistFragment instance) {
-          PlaylistFragment_MembersInjector.injectViewModelFactory(instance, getPlaylistViewModelFactory());
           return instance;
         }
 
@@ -256,6 +323,28 @@ public final class DaggerGroovyApplication_HiltComponents_ApplicationC extends G
       private final class ViewCImpl extends GroovyApplication_HiltComponents.ViewC {
         private ViewCImpl(View view) {
 
+        }
+      }
+
+      private final class SwitchingProvider<T> implements Provider<T> {
+        private final int id;
+
+        SwitchingProvider(int id) {
+          this.id = id;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public T get() {
+          switch (id) {
+            case 0: // com.abdoul.groovy.viewModel.PlaylistViewModel_AssistedFactory 
+            return (T) ActivityCImpl.this.getPlaylistViewModel_AssistedFactory();
+
+            case 1: // com.abdoul.groovy.repository.PlaylistRepository 
+            return (T) ActivityCImpl.this.getPlaylistRepository();
+
+            default: throw new AssertionError(id);
+          }
         }
       }
     }
